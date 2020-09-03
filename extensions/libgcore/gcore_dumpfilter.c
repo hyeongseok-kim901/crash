@@ -68,8 +68,10 @@ static int always_dump_vma(ulong vma)
 		if (!name)
 			goto out;
 
+#ifdef FIX_HSKIM
 		if (name == symbol_value("special_mapping_name"))
 			return special_mapping_name(vma);
+#endif
 	}
 out:
 
