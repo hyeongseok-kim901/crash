@@ -1342,6 +1342,10 @@ verify_namelist()
 		if (strstr(buffer, " SMP ")) {
 			namelist_smp = TRUE;
 			strcpy(buffer2, buffer);
+#ifndef FIX_HSKIM
+		} else {
+			continue;
+#endif
 		}
 
 		if ((p1 = strstr(buffer, "(gcc version "))) {
