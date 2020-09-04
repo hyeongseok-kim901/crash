@@ -25,10 +25,18 @@ static int gpr_get(struct task_context *target,
 		   unsigned int size, void *buf)
 {
 	struct user_pt_regs *regs = (struct user_pt_regs *)buf;
+	int offset_modify = 0;
+
+//	error(INFO, "task:%s, stack_base(%p), stack_top(%p)\n", target->comm, machdep->get_stackbase(target->task), machdep->get_stacktop(target->task));
+//	error(INFO, "SIZE(pt_regs)=%d\n", SIZE(pt_regs));
+	if ((MEMBER_EXISTS("pt_regs", "stackframe"))) {
+		offset_modify = MEMBER_SIZE("pt_regs", "stackframe");
+		error(INFO, "pt_regs have stackframe member which would be %d byte\n", offset_modify);
+	}
 
 	BZERO(regs, sizeof(*regs));
 
-	readmem(machdep->get_stacktop(target->task) - 16 - SIZE(pt_regs), KVADDR,
+	readmem(machdep->get_stacktop(target->task) - 16 + offset_modify - SIZE(pt_regs), KVADDR,
 		regs, sizeof(struct user_pt_regs), "gpr_get: user_pt_regs",
 		gcore_verbose_error_handle());
 
